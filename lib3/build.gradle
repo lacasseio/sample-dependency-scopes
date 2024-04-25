@@ -1,0 +1,22 @@
+plugins {
+    id 'cpp-library'
+}
+
+description = "Expose the API of `lib2` and privately compile against the API of `lib1`"
+
+library {
+    linkage = [Linkage.SHARED]
+}
+
+dependencies {
+    api project(':lib2')
+    compileOnlyApi project(':lib1')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib2/src/main/public', 'lib1/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib2/build/lib/main/debug/liblib2.dylib']
+        assert pathsOf(configurations.nativeRuntimeDebug) == ['lib2/build/lib/main/debug/liblib2.dylib']
+    }
+}

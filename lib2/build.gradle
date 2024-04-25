@@ -1,0 +1,20 @@
+plugins {
+    id 'cpp-library'
+}
+
+description = "Privately compile and link against the API of `lib1`"
+
+library {
+    linkage = [Linkage.SHARED]
+    dependencies {
+        implementation project(':lib1')
+    }
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib1/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib1/build/lib/main/debug/liblib1.a']
+        assert pathsOf(configurations.nativeRuntimeDebug) == []
+    }
+}

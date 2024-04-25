@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-application'
+}
+
+description = "An application depends on `lib1`, a static library, through a link-only dependency, making `lib1` available only during linking and not exposing its public headers to ensure loose coupling and modularity."
+
+dependencies {
+    linkOnly project(':lib1')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == []
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib1/build/lib/main/debug/liblib1.a']
+        assert pathsOf(configurations.nativeRuntimeDebug) == []
+    }
+}

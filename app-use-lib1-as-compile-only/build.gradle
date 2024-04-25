@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-application'
+}
+
+description = "An application utilizes `lib1`, a static library, through a compile-only dependency that provides access to public headers, enhancing modularity and abstraction."
+
+dependencies {
+    compileOnly project(':lib1')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib1/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == []
+        assert pathsOf(configurations.nativeRuntimeDebug) == []
+    }
+}

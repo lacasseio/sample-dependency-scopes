@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-application'
+}
+
+description = "An application depends on `lib3` to access `lib1`'s API through `compileOnlyApi` and uses `lib2`, which encapsulates `lib1` via an implementation dependency, providing a well-structured modular design."
+
+dependencies {
+    implementation project(':lib3')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib3/src/main/public', 'lib2/src/main/public', 'lib1/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib3/build/lib/main/debug/liblib3.dylib', 'lib2/build/lib/main/debug/liblib2.dylib']
+        assert pathsOf(configurations.nativeRuntimeDebug) == ['lib3/build/lib/main/debug/liblib3.dylib', 'lib2/build/lib/main/debug/liblib2.dylib']
+    }
+}

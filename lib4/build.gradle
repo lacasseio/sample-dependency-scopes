@@ -1,0 +1,21 @@
+plugins {
+    id 'cpp-library'
+}
+
+description = "Expose the symbols of `lib2`"
+
+library {
+    linkage = [Linkage.SHARED]
+}
+
+dependencies {
+    linkOnlyApi project(':lib2')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == []
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib2/build/lib/main/debug/liblib2.dylib']
+        assert pathsOf(configurations.nativeRuntimeDebug) == []
+    }
+}

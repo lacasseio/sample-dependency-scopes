@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-library'
+}
+
+description = "Expose the API as a static library"
+
+library {
+    linkage = [Linkage.STATIC]
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == []
+        assert pathsOf(configurations.nativeLinkDebug) == []
+        assert pathsOf(configurations.nativeRuntimeDebug) == []
+    }
+}

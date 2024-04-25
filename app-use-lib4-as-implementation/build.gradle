@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-application'
+}
+
+description = "An application depends on `lib4` through an implementation dependency and access `lib2` symbols via a `linkOnlyApi` dependency, enhancing performance and minimizing runtime dependencies."
+
+dependencies {
+    implementation project(':lib4')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib4/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib4/build/lib/main/debug/liblib4.dylib', 'lib2/build/lib/main/debug/liblib2.dylib']
+        assert pathsOf(configurations.nativeRuntimeDebug) == ['lib4/build/lib/main/debug/liblib4.dylib']
+    }
+}

@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-application'
+}
+
+description = "An application depends on `lib2`, a shared library that encapsulates `lib1`, a static library, without exposing it, due to `lib2`'s implementation-only dependency on `lib1`."
+
+dependencies {
+    implementation project(':lib2')
+}
+
+tasks.register('verify') {
+    doLast {
+        assert pathsOf(configurations.cppCompileDebug) == ['lib2/src/main/public']
+        assert pathsOf(configurations.nativeLinkDebug) == ['lib2/build/lib/main/debug/liblib2.dylib']
+        assert pathsOf(configurations.nativeRuntimeDebug) == ['lib2/build/lib/main/debug/liblib2.dylib']
+    }
+}

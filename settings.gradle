@@ -1,0 +1,24 @@
+pluginManagement {
+    includeBuild 'dependency-scopes-plugin'
+}
+
+plugins {
+    id 'dependency-scopes'
+}
+
+rootProject.name = 'sample-dependency-scopes'
+
+include 'app-use-lib1-as-compile-only'
+include 'app-use-lib1-as-link-only'
+include 'app-use-lib2-as-implementation'
+include 'app-use-lib3-as-implementation'
+include 'app-use-lib4-as-implementation'
+include 'lib1', 'lib2', 'lib3', 'lib4'
+
+List<String> pathsOf(Configuration configuration) {
+    return configuration.files*.toPath().collect { rootProject.projectDir.toPath().relativize(it) }*.toString()*.replace('\\', '/')
+}
+
+gradle.allprojects {
+    ext.pathsOf = this.&pathsOf
+}
